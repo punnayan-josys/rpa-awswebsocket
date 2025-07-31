@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RPA System Dashboard</title>
+    <title>RPA System Dashboard - Advanced</title>
     <style>
         * {
             margin: 0;
@@ -19,7 +19,7 @@
         }
 
         .container {
-            max-width: 1400px;
+            max-width: 1600px;
             margin: 0 auto;
         }
 
@@ -42,7 +42,7 @@
 
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
             gap: 20px;
             margin-bottom: 20px;
         }
@@ -139,7 +139,14 @@
 
         .btn-warning:hover { background: #e0a800; }
 
-        input, select {
+        .btn-info {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .btn-info:hover { background: #138496; }
+
+        input, select, textarea {
             padding: 8px 12px;
             border: 1px solid #ddd;
             border-radius: 6px;
@@ -183,6 +190,7 @@
             display: flex;
             border-bottom: 2px solid #dee2e6;
             margin-bottom: 15px;
+            flex-wrap: wrap;
         }
 
         .tab {
@@ -190,6 +198,7 @@
             cursor: pointer;
             border-bottom: 2px solid transparent;
             transition: all 0.3s ease;
+            white-space: nowrap;
         }
 
         .tab.active {
@@ -225,7 +234,26 @@
             width: auto;
         }
 
-        .client-search {
+        .client-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .client-card {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        .client-card h4 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .redis-query {
             background: #f8f9fa;
             border: 1px solid #dee2e6;
             border-radius: 8px;
@@ -233,7 +261,7 @@
             margin-bottom: 15px;
         }
 
-        .client-data {
+        .redis-result {
             background: #f8f9fa;
             border: 1px solid #dee2e6;
             border-radius: 8px;
@@ -242,7 +270,7 @@
             overflow-y: auto;
         }
 
-        .client-step {
+        .redis-key {
             background: white;
             border: 1px solid #dee2e6;
             border-radius: 4px;
@@ -250,25 +278,87 @@
             margin-bottom: 8px;
         }
 
-        .client-step h4 {
+        .redis-key h5 {
             margin-bottom: 5px;
             color: #333;
         }
 
-        .client-step pre {
+        .redis-key pre {
             background: #f8f9fa;
             padding: 8px;
             border-radius: 4px;
             font-size: 11px;
             overflow-x: auto;
         }
+
+        .bulk-event {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+
+        .bulk-event h4 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .event-template {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 10px;
+            margin-bottom: 8px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: #007bff;
+            transition: width 0.3s ease;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .stat-card {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        .stat-label {
+            color: #666;
+            margin-top: 5px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>🤖 RPA System Dashboard</h1>
-            <p>Monitor and control your RPA automation system</p>
+            <h1>🤖 Advanced RPA System Dashboard</h1>
+            <p>Multi-client event management and real-time Redis data monitoring</p>
         </div>
 
         <!-- System Overview -->
@@ -280,45 +370,67 @@
             <div id="overview"></div>
         </div>
 
-        <!-- Manual Event Sender -->
+        <!-- Multi-Client Event Sender -->
         <div class="card">
-            <h3>📤 Manual Event Sender</h3>
+            <h3>🚀 Multi-Client Event Sender</h3>
             <div class="form-group">
-                <label>Client ID:</label>
-                <input type="text" id="manualClientId" value="demo-client-001" placeholder="Enter client ID">
+                <label>Number of Clients:</label>
+                <input type="number" id="numClients" value="3" min="1" max="10">
             </div>
             <div class="form-group">
-                <label>Session ID:</label>
-                <input type="text" id="manualSessionId" value="demo-session-001" placeholder="Enter session ID">
+                <label>Events per Client:</label>
+                <input type="number" id="eventsPerClient" value="5" min="1" max="20">
             </div>
             <div class="form-group">
-                <label>Action Type:</label>
-                <select id="manualAction">
-                    <option value="click">Click</option>
-                    <option value="type">Type</option>
-                    <option value="scroll">Scroll</option>
-                    <option value="hover">Hover</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Target:</label>
-                <input type="text" id="manualTarget" value="#button" placeholder="CSS selector">
-            </div>
-            <div class="form-group" id="manualValueGroup" style="display: none;">
-                <label>Value:</label>
-                <input type="text" id="manualValue" placeholder="Text to type">
+                <label>Event Interval (ms):</label>
+                <input type="number" id="eventInterval" value="1000" min="100" max="5000">
             </div>
             <div class="controls">
-                <button class="btn-primary" onclick="sendManualEvent()">📤 Send Event</button>
+                <button class="btn-success" onclick="startBulkEvents()">🚀 Start Bulk Events</button>
+                <button class="btn-danger" onclick="stopBulkEvents()">⏹️ Stop Bulk Events</button>
                 <button class="btn-warning" onclick="clearData()">🗑️ Clear Data</button>
             </div>
+            <div id="bulkProgress" style="display: none;">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                </div>
+                <div id="progressText">0% Complete</div>
+            </div>
+        </div>
+
+        <!-- Real-time Redis Data Query -->
+        <div class="card">
+            <h3>🔍 Real-time Redis Data Query</h3>
+            <div class="redis-query">
+                <div class="form-group">
+                    <label>Redis Query Type:</label>
+                    <select id="redisQueryType">
+                        <option value="keys">All Keys</option>
+                        <option value="pending_steps">Pending Steps</option>
+                        <option value="clients">Client Data</option>
+                        <option value="connections">Connection Data</option>
+                        <option value="custom">Custom Key</option>
+                    </select>
+                </div>
+                <div class="form-group" id="customKeyGroup" style="display: none;">
+                    <label>Custom Redis Key:</label>
+                    <input type="text" id="customRedisKey" placeholder="e.g., pending_steps:session-001">
+                </div>
+                <div class="controls">
+                    <button class="btn-primary" onclick="queryRedis()">🔍 Query Redis</button>
+                    <button class="btn-info" onclick="refreshRedisData()">🔄 Refresh</button>
+                </div>
+            </div>
+            <div id="redisResult" class="redis-result"></div>
         </div>
 
         <!-- Detailed Views -->
         <div class="card">
             <div class="tabs">
                 <div class="tab active" onclick="showTab('pending')">📋 Pending Steps</div>
-                <div class="tab" onclick="showTab('logs')">📝 Logs</div>
+                <div class="tab" onclick="showTab('clients')">👥 Client Activity</div>
+                <div class="tab" onclick="showTab('stats')">📈 Statistics</div>
+                <div class="tab" onclick="showTab('logs')">📝 Activity Logs</div>
             </div>
 
             <div class="auto-refresh">
@@ -331,6 +443,16 @@
                 <div id="pendingStepsList"></div>
             </div>
 
+            <!-- Client Activity Tab -->
+            <div id="clients" class="tab-content">
+                <div id="clientActivityList"></div>
+            </div>
+
+            <!-- Statistics Tab -->
+            <div id="stats" class="tab-content">
+                <div id="statisticsList"></div>
+            </div>
+
             <!-- Logs Tab -->
             <div id="logs" class="tab-content">
                 <div class="log-container" id="logContainer"></div>
@@ -341,27 +463,32 @@
     <script>
         let autoRefreshInterval;
         let currentTab = 'pending';
+        let bulkEventInterval;
+        let isBulkRunning = false;
+        let totalEvents = 0;
+        let completedEvents = 0;
 
         // Initialize dashboard
         document.addEventListener('DOMContentLoaded', function() {
             refreshOverview();
             loadPendingSteps();
+            loadClientActivity();
+            loadStatistics();
             startAutoRefresh();
             
-            // Handle action type change
-            document.getElementById('manualAction').addEventListener('change', function() {
-                const valueGroup = document.getElementById('manualValueGroup');
-                if (this.value === 'type') {
-                    valueGroup.style.display = 'block';
+            // Handle Redis query type change
+            document.getElementById('redisQueryType').addEventListener('change', function() {
+                const customGroup = document.getElementById('customKeyGroup');
+                if (this.value === 'custom') {
+                    customGroup.style.display = 'block';
                 } else {
-                    valueGroup.style.display = 'none';
+                    customGroup.style.display = 'none';
                 }
             });
         });
 
         // Tab switching
         function showTab(tabName) {
-            // Hide all tabs
             document.querySelectorAll('.tab-content').forEach(tab => {
                 tab.classList.remove('active');
             });
@@ -369,7 +496,6 @@
                 tab.classList.remove('active');
             });
 
-            // Show selected tab
             document.getElementById(tabName).classList.add('active');
             document.querySelector(`[onclick="showTab('${tabName}')"]`).classList.add('active');
             
@@ -385,8 +511,151 @@
                 if (document.getElementById('autoRefresh').checked) {
                     refreshOverview();
                     refreshCurrentTab();
+                    if (currentTab === 'clients') {
+                        loadClientActivity();
+                    }
                 }
             }, 5000);
+        }
+
+        // Bulk event functions
+        async function startBulkEvents() {
+            if (isBulkRunning) {
+                log('Bulk events already running', 'warning');
+                return;
+            }
+
+            const numClients = parseInt(document.getElementById('numClients').value);
+            const eventsPerClient = parseInt(document.getElementById('eventsPerClient').value);
+            const interval = parseInt(document.getElementById('eventInterval').value);
+
+            totalEvents = numClients * eventsPerClient;
+            completedEvents = 0;
+            isBulkRunning = true;
+
+            document.getElementById('bulkProgress').style.display = 'block';
+            updateProgress();
+
+            log(`Starting bulk events: ${numClients} clients, ${eventsPerClient} events each`, 'info');
+
+            for (let clientIndex = 0; clientIndex < numClients; clientIndex++) {
+                const clientId = `bulk-client-${clientIndex + 1}`;
+                
+                for (let eventIndex = 0; eventIndex < eventsPerClient; eventIndex++) {
+                    if (!isBulkRunning) break;
+
+                    const sessionId = `bulk-session-${clientIndex + 1}`;
+                    const actions = ['click', 'type', 'scroll', 'hover'];
+                    const action = actions[Math.floor(Math.random() * actions.length)];
+                    const target = `#element-${eventIndex + 1}`;
+
+                    try {
+                        await sendEvent(clientId, sessionId, action, target);
+                        completedEvents++;
+                        updateProgress();
+                    } catch (error) {
+                        log(`Error sending event: ${error.message}`, 'error');
+                    }
+
+                    if (isBulkRunning && eventIndex < eventsPerClient - 1) {
+                        await new Promise(resolve => setTimeout(resolve, interval));
+                    }
+                }
+            }
+
+            isBulkRunning = false;
+            log(`Bulk events completed: ${completedEvents}/${totalEvents} events sent`, 'success');
+            refreshOverview();
+        }
+
+        function stopBulkEvents() {
+            isBulkRunning = false;
+            log('Bulk events stopped', 'warning');
+        }
+
+        function updateProgress() {
+            const percentage = totalEvents > 0 ? Math.round((completedEvents / totalEvents) * 100) : 0;
+            document.getElementById('progressFill').style.width = percentage + '%';
+            document.getElementById('progressText').textContent = `${completedEvents}/${totalEvents} events (${percentage}%)`;
+        }
+
+        // Redis query functions
+        async function queryRedis() {
+            const queryType = document.getElementById('redisQueryType').value;
+            const customKey = document.getElementById('customRedisKey').value;
+
+            try {
+                let result;
+                switch (queryType) {
+                    case 'keys':
+                        result = await fetch('/redis/keys').then(r => r.json());
+                        break;
+                    case 'pending_steps':
+                        result = await fetch('/redis/pending-steps').then(r => r.json());
+                        break;
+                    case 'clients':
+                        result = await fetch('/redis/clients').then(r => r.json());
+                        break;
+                    case 'connections':
+                        result = await fetch('/redis/connections').then(r => r.json());
+                        break;
+                    case 'custom':
+                        if (!customKey) {
+                            log('Please enter a custom Redis key', 'warning');
+                            return;
+                        }
+                        result = await fetch(`/redis/custom/${encodeURIComponent(customKey)}`).then(r => r.json());
+                        break;
+                }
+
+                displayRedisResult(result, queryType);
+                log(`Redis query completed: ${queryType}`, 'success');
+            } catch (error) {
+                log(`Redis query error: ${error.message}`, 'error');
+            }
+        }
+
+        async function refreshRedisData() {
+            await queryRedis();
+        }
+
+        function displayRedisResult(data, queryType) {
+            const resultDiv = document.getElementById('redisResult');
+            let html = `<h4>Redis Query Result: ${queryType}</h4>`;
+
+            if (data.error) {
+                html += `<div class="redis-key"><p style="color: red;">Error: ${data.error}</p></div>`;
+            } else if (data.keys && data.keys.length > 0) {
+                data.keys.forEach(key => {
+                    html += `
+                        <div class="redis-key">
+                            <h5>Key: ${key}</h5>
+                            <pre>${JSON.stringify(data.data[key] || 'No data', null, 2)}</pre>
+                        </div>
+                    `;
+                });
+            } else if (data.data) {
+                html += `<pre>${JSON.stringify(data.data, null, 2)}</pre>`;
+            } else {
+                html += '<p>No data found</p>';
+            }
+
+            resultDiv.innerHTML = html;
+        }
+
+        // Helper function to send events
+        async function sendEvent(clientId, sessionId, action, target, value = '') {
+            const response = await fetch('/send-event', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ clientId, sessionId, action, target, value })
+            });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+            
+            return await response.json();
         }
 
         // Refresh functions
@@ -396,17 +665,23 @@
                 const data = await response.json();
                 
                 document.getElementById('overview').innerHTML = `
-                    <div class="metric">
-                        <span class="metric-label">Active Connections:</span>
-                        <span class="metric-value">${data.activeConnections}</span>
-                    </div>
-                    <div class="metric">
-                        <span class="metric-label">Active Clients:</span>
-                        <span class="metric-value">${data.activeClients}</span>
-                    </div>
-                    <div class="metric">
-                        <span class="metric-label">Total Pending Steps:</span>
-                        <span class="metric-value">${data.totalPendingSteps}</span>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number">${data.activeConnections}</div>
+                            <div class="stat-label">Active Connections</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">${data.activeClients}</div>
+                            <div class="stat-label">Active Clients</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">${data.totalPendingSteps}</div>
+                            <div class="stat-label">Total Pending Steps</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">${Object.keys(data.pendingSteps).length}</div>
+                            <div class="stat-label">Active Sessions</div>
+                        </div>
                     </div>
                     <div class="metric">
                         <span class="metric-label">Last Updated:</span>
@@ -443,37 +718,93 @@
             }
         }
 
+        async function loadClientActivity() {
+            try {
+                const response = await fetch('/clients/summary');
+                const data = await response.json();
+                
+                let html = '<h4>Client Activity Summary</h4>';
+                if (data.clients.length === 0) {
+                    html += '<p>No active clients</p>';
+                } else {
+                    data.clients.forEach(client => {
+                        html += `
+                            <div class="client-card">
+                                <h4>👤 ${client.clientId}</h4>
+                                <div class="metric">
+                                    <span class="metric-label">Events Sent:</span>
+                                    <span class="metric-value">${client.eventsSent}</span>
+                                </div>
+                                <div class="metric">
+                                    <span class="metric-label">Pending Steps:</span>
+                                    <span class="metric-value">${client.totalPendingSteps}</span>
+                                </div>
+                                <div class="metric">
+                                    <span class="metric-label">Last Activity:</span>
+                                    <span class="metric-value">${client.lastActivity}</span>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+                
+                document.getElementById('clientActivityList').innerHTML = html;
+            } catch (error) {
+                log('Error loading client activity: ' + error.message, 'error');
+            }
+        }
+
+        async function loadStatistics() {
+            try {
+                const response = await fetch('/overview');
+                const data = await response.json();
+                
+                const totalSessions = Object.keys(data.pendingSteps).length;
+                const avgStepsPerSession = totalSessions > 0 ? (data.totalPendingSteps / totalSessions).toFixed(1) : 0;
+                
+                let html = '<h4>System Statistics</h4>';
+                html += `
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number">${data.totalPendingSteps}</div>
+                            <div class="stat-label">Total Events</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">${totalSessions}</div>
+                            <div class="stat-label">Active Sessions</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">${avgStepsPerSession}</div>
+                            <div class="stat-label">Avg Steps/Session</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">${data.activeClients}</div>
+                            <div class="stat-label">Active Clients</div>
+                        </div>
+                    </div>
+                `;
+                
+                document.getElementById('statisticsList').innerHTML = html;
+            } catch (error) {
+                log('Error loading statistics: ' + error.message, 'error');
+            }
+        }
+
         function refreshCurrentTab() {
             switch (currentTab) {
                 case 'pending':
                     loadPendingSteps();
                     break;
+                case 'clients':
+                    loadClientActivity();
+                    break;
+                case 'stats':
+                    loadStatistics();
+                    break;
             }
         }
 
         // Control functions
-        async function sendManualEvent() {
-            const clientId = document.getElementById('manualClientId').value;
-            const sessionId = document.getElementById('manualSessionId').value;
-            const action = document.getElementById('manualAction').value;
-            const target = document.getElementById('manualTarget').value;
-            const value = document.getElementById('manualValue').value;
-            
-            try {
-                const response = await fetch('/send-event', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ clientId, sessionId, action, target, value })
-                });
-                
-                const result = await response.json();
-                log('Manual event sent: ' + JSON.stringify(result), 'success');
-                refreshOverview();
-            } catch (error) {
-                log('Error sending manual event: ' + error.message, 'error');
-            }
-        }
-
         async function clearData() {
             if (!confirm('Are you sure you want to clear all pending steps?')) return;
             
@@ -502,14 +833,13 @@
             logContainer.appendChild(logEntry);
             logContainer.scrollTop = logContainer.scrollHeight;
             
-            // Keep only last 100 entries
             while (logContainer.children.length > 100) {
                 logContainer.removeChild(logContainer.firstChild);
             }
         }
 
         // Initial log
-        log('Dashboard loaded successfully', 'success');
+        log('Advanced RPA Dashboard loaded successfully', 'success');
     </script>
 </body>
 </html> 

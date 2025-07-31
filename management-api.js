@@ -265,6 +265,139 @@ app.get('/pending-steps/:sessionId', async (req, res) => {
   }
 });
 
+// Redis query endpoints
+app.get('/redis/keys', async (req, res) => {
+  try {
+    const keys = await redis.keys('*');
+    const data = {};
+    
+    for (const key of keys) {
+      const type = await redis.type(key);
+      
+      switch (type) {
+        case 'string':
+          data[key] = await redis.get(key);
+          break;
+        case 'list':
+          data[key] = await redis.lrange(key, 0, -1);
+          break;
+        case 'set':
+          data[key] = await redis.smembers(key);
+          break;
+        case 'hash':
+          data[key] = await redis.hgetall(key);
+          break;
+        default:
+          data[key] = `Type: ${type}`;
+      }
+    }
+    
+    res.json({
+      keys,
+      data,
+      count: keys.length,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/redis/pending-steps', async (req, res) => {
+  try {
+    const keys = await redis.keys('pending_steps:*');
+    const data = {};
+    
+    for (const key of keys) {
+      const steps = await redis.lrange(key, 0, -1);
+      data[key] = steps.map(step => JSON.parse(step));
+    }
+    
+    res.json({
+      keys,
+      data,
+      count: keys.length,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/redis/clients', async (req, res) => {
+  try {
+    const keys = await redis.keys('clients:*');
+    const data = {};
+    
+    for (const key of keys) {
+      data[key] = await redis.hgetall(key);
+    }
+    
+    res.json({
+      keys,
+      data,
+      count: keys.length,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/redis/connections', async (req, res) => {
+  try {
+    const keys = await redis.keys('connections:*');
+    const data = {};
+    
+    for (const key of keys) {
+      data[key] = await redis.hgetall(key);
+    }
+    
+    res.json({
+      keys,
+      data,
+      count: keys.length,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/redis/custom/:key', async (req, res) => {
+  try {
+    const { key } = req.params;
+    const type = await redis.type(key);
+    let data;
+    
+    switch (type) {
+      case 'string':
+        data = await redis.get(key);
+        break;
+      case 'list':
+        data = await redis.lrange(key, 0, -1);
+        break;
+      case 'set':
+        data = await redis.smembers(key);
+        break;
+      case 'hash':
+        data = await redis.hgetall(key);
+        break;
+      default:
+        data = `Type: ${type}`;
+    }
+    
+    res.json({
+      key,
+      type,
+      data,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Send single RPA event
 app.post('/send-event', async (req, res) => {
   try {

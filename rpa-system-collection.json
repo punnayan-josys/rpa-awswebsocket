@@ -1,0 +1,492 @@
+{
+  "info": {
+    "name": "RPA System API",
+    "description": "Complete API collection for RPA System testing with multi-client events and Redis data querying",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": "1.0.0"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3001",
+      "type": "string"
+    },
+    {
+      "key": "client_id",
+      "value": "postman-client-001",
+      "type": "string"
+    },
+    {
+      "key": "session_id",
+      "value": "postman-session-001",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Core API",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": ["{{base_url}}"],
+              "path": ["health"]
+            },
+            "description": "Check if the Management API is running"
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status is ok\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response has status field\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.status).to.eql(\"ok\");",
+                  "});",
+                  "",
+                  "pm.test(\"Response time is less than 1000ms\", function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "System Overview",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/overview",
+              "host": ["{{base_url}}"],
+              "path": ["overview"]
+            },
+            "description": "Get system statistics and pending steps overview"
+          },
+          "response": []
+        }
+      ],
+      "description": "Core API endpoints for system health and overview"
+    },
+    {
+      "name": "Event Management",
+      "item": [
+        {
+          "name": "Send Click Event",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"clientId\": \"{{client_id}}\",\n  \"sessionId\": \"{{session_id}}\",\n  \"action\": \"click\",\n  \"target\": \"#login-button\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/send-event",
+              "host": ["{{base_url}}"],
+              "path": ["send-event"]
+            },
+            "description": "Send a click event to the system"
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Event sent successfully\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.message).to.eql(\"Event sent\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Send Type Event",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"clientId\": \"{{client_id}}\",\n  \"sessionId\": \"{{session_id}}\",\n  \"action\": \"type\",\n  \"target\": \"#username-input\",\n  \"value\": \"testuser123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/send-event",
+              "host": ["{{base_url}}"],
+              "path": ["send-event"]
+            },
+            "description": "Send a type event with text value"
+          },
+          "response": []
+        },
+        {
+          "name": "Send Scroll Event",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"clientId\": \"{{client_id}}\",\n  \"sessionId\": \"{{session_id}}\",\n  \"action\": \"scroll\",\n  \"target\": \"body\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/send-event",
+              "host": ["{{base_url}}"],
+              "path": ["send-event"]
+            },
+            "description": "Send a scroll event"
+          },
+          "response": []
+        },
+        {
+          "name": "Send Hover Event",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"clientId\": \"{{client_id}}\",\n  \"sessionId\": \"{{session_id}}\",\n  \"action\": \"hover\",\n  \"target\": \"#menu-item\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/send-event",
+              "host": ["{{base_url}}"],
+              "path": ["send-event"]
+            },
+            "description": "Send a hover event"
+          },
+          "response": []
+        },
+        {
+          "name": "Clear All Data",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/clear-data",
+              "host": ["{{base_url}}"],
+              "path": ["clear-data"]
+            },
+            "description": "Clear all pending steps from Redis"
+          },
+          "response": []
+        }
+      ],
+      "description": "Event management endpoints for sending RPA events"
+    },
+    {
+      "name": "Redis Data Queries",
+      "item": [
+        {
+          "name": "Get All Redis Keys",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/redis/keys",
+              "host": ["{{base_url}}"],
+              "path": ["redis", "keys"]
+            },
+            "description": "Get all Redis keys and their data"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Pending Steps",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/redis/pending-steps",
+              "host": ["{{base_url}}"],
+              "path": ["redis", "pending-steps"]
+            },
+            "description": "Get all pending RPA steps by session"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Client Data",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/redis/clients",
+              "host": ["{{base_url}}"],
+              "path": ["redis", "clients"]
+            },
+            "description": "Get all client information stored in Redis"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Connection Data",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/redis/connections",
+              "host": ["{{base_url}}"],
+              "path": ["redis", "connections"]
+            },
+            "description": "Get all connection information"
+          },
+          "response": []
+        },
+        {
+          "name": "Custom Redis Key Query",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/redis/custom/pending_steps:{{session_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["redis", "custom", "pending_steps:{{session_id}}"]
+            },
+            "description": "Query a specific Redis key"
+          },
+          "response": []
+        }
+      ],
+      "description": "Redis data query endpoints for monitoring and debugging"
+    },
+    {
+      "name": "Client Management",
+      "item": [
+        {
+          "name": "Get Client Summary",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/clients/summary",
+              "host": ["{{base_url}}"],
+              "path": ["clients", "summary"]
+            },
+            "description": "Get summary of all active clients"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Client by Session",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/client/{{client_id}}/session/{{session_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["client", "{{client_id}}", "session", "{{session_id}}"]
+            },
+            "description": "Get events for a specific client in a specific session"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Pending Steps by Session",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/pending-steps/{{session_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["pending-steps", "{{session_id}}"]
+            },
+            "description": "Get all pending steps for a specific session"
+          },
+          "response": []
+        }
+      ],
+      "description": "Client management and session tracking endpoints"
+    },
+    {
+      "name": "Testing Workflow",
+      "item": [
+        {
+          "name": "1. Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": ["{{base_url}}"],
+              "path": ["health"]
+            },
+            "description": "Step 1: Verify API is running"
+          },
+          "response": []
+        },
+        {
+          "name": "2. Check Initial State",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/overview",
+              "host": ["{{base_url}}"],
+              "path": ["overview"]
+            },
+            "description": "Step 2: Check initial system state"
+          },
+          "response": []
+        },
+        {
+          "name": "3. Send Test Events",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"clientId\": \"{{client_id}}\",\n  \"sessionId\": \"{{session_id}}\",\n  \"action\": \"click\",\n  \"target\": \"#test-button\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/send-event",
+              "host": ["{{base_url}}"],
+              "path": ["send-event"]
+            },
+            "description": "Step 3: Send test events"
+          },
+          "response": []
+        },
+        {
+          "name": "4. Verify Data Storage",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/redis/pending-steps",
+              "host": ["{{base_url}}"],
+              "path": ["redis", "pending-steps"]
+            },
+            "description": "Step 4: Verify events are stored in Redis"
+          },
+          "response": []
+        },
+        {
+          "name": "5. Query Specific Data",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/redis/custom/pending_steps:{{session_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["redis", "custom", "pending_steps:{{session_id}}"]
+            },
+            "description": "Step 5: Query specific session data"
+          },
+          "response": []
+        },
+        {
+          "name": "6. Check Client Summary",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/clients/summary",
+              "host": ["{{base_url}}"],
+              "path": ["clients", "summary"]
+            },
+            "description": "Step 6: Check client activity summary"
+          },
+          "response": []
+        },
+        {
+          "name": "7. Clear Data",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/clear-data",
+              "host": ["{{base_url}}"],
+              "path": ["clear-data"]
+            },
+            "description": "Step 7: Clear all data"
+          },
+          "response": []
+        }
+      ],
+      "description": "Complete testing workflow from start to finish"
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Set default values if not already set",
+          "if (!pm.collectionVariables.get(\"base_url\")) {",
+          "    pm.collectionVariables.set(\"base_url\", \"http://localhost:3001\");",
+          "}",
+          "if (!pm.collectionVariables.get(\"client_id\")) {",
+          "    pm.collectionVariables.set(\"client_id\", \"postman-client-001\");",
+          "}",
+          "if (!pm.collectionVariables.get(\"session_id\")) {",
+          "    pm.collectionVariables.set(\"session_id\", \"postman-session-001\");",
+          "}"
+        ]
+      }
+    }
+  ]
+} 
